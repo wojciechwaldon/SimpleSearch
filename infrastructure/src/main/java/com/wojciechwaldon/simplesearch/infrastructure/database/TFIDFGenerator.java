@@ -14,7 +14,7 @@ class TFIDFGenerator {
         this.tokenizator = tokenizator;
     }
 
-    public double generateFor(String document, HashMap<String, Set<String>> phrases, String phrase) {
+    double generateFor(String document, HashMap<String, Set<String>> phrases, String phrase) {
         return tf(tokenizator.tokenize(document), phrase) * idf(phrases, phrase);
     }
 
@@ -23,7 +23,7 @@ class TFIDFGenerator {
         long phraseInDocument = phrases.stream()
                 .filter(phrase::equalsIgnoreCase)
                 .count();
-        return 05 + 05 *(double)phraseInDocument / (double)phrases.size();
+        return (double)phraseInDocument / (double)phrases.size();
     }
 
     // number of documents (phrases) / number of documents (phrases) that contain the phrase
@@ -41,11 +41,6 @@ class TFIDFGenerator {
                }
             }
         }
-//        double phraseInOverall = documents.stream()
-//                .flatMap(document -> tokenizator.tokenize(document).stream())
-//                .filter(phrase::equalsIgnoreCase)
-//                .count();
-
         return Math.log(documents.size() / phraseInOverall);
 
     }
