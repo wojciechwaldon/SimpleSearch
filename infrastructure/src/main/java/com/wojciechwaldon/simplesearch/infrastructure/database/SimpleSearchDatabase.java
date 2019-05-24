@@ -37,7 +37,6 @@ public class SimpleSearchDatabase implements Database {
 
         List<String> documentsForPhrase = new ArrayList<>(phrases.get(phrase));
         documentsForPhrase.sort(new PhraseComparator(tfidfGenerator, phrases, phrase));
-      //  documentsForPhrase.sort((o1, o2) -> (tfidfGenerator.generateFor(o1, phrases, phrase) > tfidfGenerator.generateFor(o2, phrases, phrase)) ? 1 : 0);
         return documentsForPhrase;
     }
 

@@ -22,10 +22,5 @@ public class PhraseComparator implements Comparator<String> {
         double o2Value = tfidfGenerator.generateFor(o2, phrases, phrase);
 
         return Double.compare(o2Value, o1Value);
-
-//        if(o1Value > o2Value) return -1;
-//        if(o1Value < o2Value) return 1;
-//        return 0;
-        //  return Double.compare(o1Value, o2Value);
     }
 }
