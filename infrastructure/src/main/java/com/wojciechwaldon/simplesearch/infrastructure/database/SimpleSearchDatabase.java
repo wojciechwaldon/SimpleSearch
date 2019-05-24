@@ -3,16 +3,14 @@ package com.wojciechwaldon.simplesearch.infrastructure.database;
 import com.wojciechwaldon.simplesearch.application.Database;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class SimpleSearchDatabase implements Database {
 
     private HashMap<String, Set<String>> phrases;
     private Tokenizator tokenizator;
+    private TFIDFGenerator tfidfGenerator;
 
     private Consumer<String> saveDocument = document -> {
         List<String> words = tokenizator.tokenize(document);
@@ -23,8 +21,9 @@ public class SimpleSearchDatabase implements Database {
     };
 
     public SimpleSearchDatabase() {
-        phrases = new HashMap<>();
-        tokenizator = new Tokenizator();
+        this.phrases = new HashMap<>();
+        this.tokenizator = new Tokenizator();
+        this.tfidfGenerator = new TFIDFGenerator(tokenizator);
     }
 
     @Override
@@ -34,8 +33,12 @@ public class SimpleSearchDatabase implements Database {
     }
 
     @Override
-    public Set<String> getDocumentsFor(String phrase) {
-        return phrases.get(phrase);
+    public List<String> getDocumentsFor(String phrase) {
+
+        List<String> documentsForPhrase = new ArrayList<>(phrases.get(phrase));
+        documentsForPhrase.sort(new PhraseComparator(tfidfGenerator, phrases, phrase));
+      //  documentsForPhrase.sort((o1, o2) -> (tfidfGenerator.generateFor(o1, phrases, phrase) > tfidfGenerator.generateFor(o2, phrases, phrase)) ? 1 : 0);
+        return documentsForPhrase;
     }
 
     private void putValue(String document, String phrase) {

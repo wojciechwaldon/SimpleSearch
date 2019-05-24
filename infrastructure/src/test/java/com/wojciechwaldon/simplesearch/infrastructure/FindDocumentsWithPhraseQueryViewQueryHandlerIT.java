@@ -12,9 +12,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
@@ -33,18 +35,38 @@ public class FindDocumentsWithPhraseQueryViewQueryHandlerIT {
     private Database database;
 
     @Test
-    public void shouldFindDocuments() throws Throwable {
+    public void shouldFindBrownPhraseDocuments() throws Throwable {
         //given
         String phrase_brown = "brown";
-        String phrase_fox = "fox";
         FindDocumentsWithPhraseQuery query = FindDocumentsWithPhraseQuery.of(phrase_brown);
 
         //when
         database.save(DOCUMENTS);
 
-        FindDocumentsWithPhraseQueryView documents = queryExecutor.execute(query);
+        FindDocumentsWithPhraseQueryView queryView = queryExecutor.execute(query);
+        List<String> documents = queryView.getDocuments();
 
-        //then
-        assertFalse(documents.getDocuments().isEmpty());
+        //then;
+        assertThat(documents).hasSize(2);
+        assertEquals(DOCUMENT_1, documents.get(0));
+        assertEquals(DOCUMENT_2, documents.get(1));
+    }
+
+    @Test
+    public void shouldFindFoxPhraseDocuments() throws Throwable {
+        //given
+        String phrase_fox = "fox";
+        FindDocumentsWithPhraseQuery query = FindDocumentsWithPhraseQuery.of(phrase_fox);
+
+        //when
+        database.save(DOCUMENTS);
+
+        FindDocumentsWithPhraseQueryView queryView = queryExecutor.execute(query);
+        List<String> documents = queryView.getDocuments();
+
+        //then;
+        assertThat(documents).hasSize(2);
+        assertEquals(DOCUMENT_1, documents.get(0));
+        assertEquals(DOCUMENT_3, documents.get(1));
     }
 }

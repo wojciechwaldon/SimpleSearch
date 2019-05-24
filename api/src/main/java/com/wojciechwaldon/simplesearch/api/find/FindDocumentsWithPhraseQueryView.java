@@ -3,7 +3,7 @@ package com.wojciechwaldon.simplesearch.api.find;
 import com.wojciechwaldon.cqrs.api.query.QueryView;
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
@@ -11,5 +11,5 @@ import java.util.Set;
 @ToString
 public class FindDocumentsWithPhraseQueryView implements QueryView {
 
-    Set<String> documents;
+    List<String> documents;
 }
