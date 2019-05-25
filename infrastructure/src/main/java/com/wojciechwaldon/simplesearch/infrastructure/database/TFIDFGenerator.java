@@ -5,19 +5,19 @@ import java.util.Set;
 
 class TFIDFGenerator {
 
-    double generateFor(List<String> documentWords, Set<Document> documents, String phrase) {
+    static double generateFor(List<String> documentWords, Set<Document> documents, String phrase) {
         return tf(documentWords, phrase) * idf(documents, phrase);
     }
 
     // number of times phrase appears in the document
-    private double tf(List<String> phrases, String phrase) {
+    private static double tf(List<String> phrases, String phrase) {
         return (double) phrases.stream()
                 .filter(phrase::equalsIgnoreCase)
                 .count();
     }
 
     // Math.log(number of documents (phrases) / number of documents (phrases) that contain the phrase)
-    private double idf(Set<Document> documents, String phrase) {
+    private static double idf(Set<Document> documents, String phrase) {
         double phraseInOverall = 0;
         for (Document document : documents) {
             for (String phraseInDocument : document.getPhrases()) {

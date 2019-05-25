@@ -25,7 +25,7 @@ class Document {
         return new Document(content, Tokenizator.tokenize(content));
     }
 
-    public Double getTfidf(String phrase) {
+    Double getTfidf(String phrase) {
         return tfidf.get(phrase);
     }
 

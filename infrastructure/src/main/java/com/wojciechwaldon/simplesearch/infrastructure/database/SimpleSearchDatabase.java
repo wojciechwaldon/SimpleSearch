@@ -2,25 +2,22 @@ package com.wojciechwaldon.simplesearch.infrastructure.database;
 
 import com.wojciechwaldon.simplesearch.application.Database;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class SimpleSearchDatabase implements Database {
 
-    private Set<Document> documents;
-    private TFIDFGenerator tfidfGenerator;
+    private Set<Document> documents = new HashSet<>();
 
     private Consumer<String> saveDocument = document -> {
         documents.add(Document.of(document));
 
         updatePhraseTFIDF();
     };
-
-    public SimpleSearchDatabase() {
-        this.documents = new HashSet<>();
-        this.tfidfGenerator = new TFIDFGenerator();
-    }
 
     @Override
     public void save(Set<String> documents) {
@@ -54,7 +51,7 @@ public class SimpleSearchDatabase implements Database {
     private void updatePhraseTFIDF() {
         for (Document document : documents) {
             for (String phrase : document.getPhrases()) {
-                double TFIDF = tfidfGenerator.generateFor(document.getPhrases(), documents, phrase);
+                double TFIDF = TFIDFGenerator.generateFor(document.getPhrases(), documents, phrase);
 
                 document.updateTFIDF(phrase, TFIDF);
             }
