@@ -59,7 +59,7 @@ public class FindDocumentsWithPhraseQueryViewQueryHandlerIT extends BaseHanderIT
         FindDocumentsWithPhraseQueryView queryView = queryExecutor.execute(query);
         List<String> documents = queryView.getDocuments();
 
-        //then;
+        //then
         assertThat(documents).hasSize(2);
         assertEquals(DOCUMENT_1, documents.get(0));
         assertEquals(DOCUMENT_3, documents.get(1));

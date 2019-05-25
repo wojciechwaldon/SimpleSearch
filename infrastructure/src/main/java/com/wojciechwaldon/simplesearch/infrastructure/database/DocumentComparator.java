@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import java.util.Comparator;
 
 @AllArgsConstructor(staticName = "of")
-public class DocumentComparator implements Comparator<Document> {
+class DocumentComparator implements Comparator<Document> {
 
     private String phrase;
 

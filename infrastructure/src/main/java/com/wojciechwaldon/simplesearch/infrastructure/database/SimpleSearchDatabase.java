@@ -1,6 +1,7 @@
 package com.wojciechwaldon.simplesearch.infrastructure.database;
 
 import com.wojciechwaldon.simplesearch.application.Database;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,6 +37,11 @@ public class SimpleSearchDatabase implements Database {
             if (hasPhrase)
                 documentsWithPhrase.add(document);
         }
+
+        return documentsSortedByTFIDF(documentsWithPhrase, phrase);
+    }
+
+    private List<@NonNull String> documentsSortedByTFIDF(List<Document> documentsWithPhrase, String phrase) {
         documentsWithPhrase.sort(DocumentComparator.of(phrase));
 
         return documentsWithPhrase.stream()

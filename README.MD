@@ -11,12 +11,12 @@ The search engine is able to:
 * Necessary dependencies:
 ```
     <dependency>
-        <groupId>com.wojciechwaldon</groupId>
-        <artifactId>cqrs</artifactId>
+        <groupId>com.wojciechwaldon.cqrs</groupId>
+        <artifactId>api</artifactId>
     </dependency>
 ```
 
-* Necessary beans located in **cqrs-infrastructure** configuration:
+* Necessary beans located in **cqrs-infrastructure** module configuration, example:
 
 ```
     @Configuration
@@ -26,9 +26,24 @@ The search engine is able to:
     }
 ```
 
+```
+    <dependency>
+        <groupId>com.wojciechwaldon.cqrs</groupId>
+        <artifactId>infrastructure</artifactId>
+    </dependency>
+```
+
+## Structure
+
+* **api module** - core functionality providing module
+* **application module** - module responsible for api's logical part
+* **infrastructure module** - module carrying for implementation of the infrastructure abstraction
+
+Partition created with intention to deliver abstract components available for later modification. (DDD, Dependency Inversion)
+
 ## Testing
 
-**infrastructure** module contains set of functionality tests
+**Infrastructure** module contains set of functionality tests available to run manually.
 
 ## Built With
 
