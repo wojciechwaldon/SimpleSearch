@@ -12,6 +12,10 @@
     <groupId>com.wojciechwaldon.simple-search</groupId>
     <artifactId>api</artifactId>
 
+    <properties>
+        <lombok.version>1.18.4</lombok.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.wojciechwaldon.cqrs</groupId>
@@ -21,7 +25,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.4</version>
+            <version>${lombok.version}</version>
         </dependency>
     </dependencies>
 

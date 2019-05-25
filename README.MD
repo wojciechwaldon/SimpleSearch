@@ -1,19 +1,39 @@
+# Simple search engine
 
-At start i 
+The search engine is able to:
+* take in a list of documents
+* support searches for single terms in the document set
+* return a list of matching documents sorted by TF-IDF 
 
-I consider two options:
+## Getting Started
+### Prerequisites
 
-1. Create Map<Document, Phrase>
-   Phrase containing value and it's TF*IDF
-   
-It will be more demanding at saving document, but faster during searching exact phrase;
+* Necessary dependencies:
+```
+    <dependency>
+        <groupId>com.wojciechwaldon</groupId>
+        <artifactId>cqrs</artifactId>
+    </dependency>
+```
 
-Steps:
- * Calculating TF*IDF for every phrase in database (caused putting new elements)
- * Searching for every element containing exact phrase
- * Sor by calculated TF*IDF value
+* Necessary beans located in **cqrs-infrastructure** configuration:
 
-2. Create map <Phrase, List<Document>>
+```
+    @Configuration
+    @Import(CqrsConfiguration.class)
+    public class TargetConfiguration {
+      ...
+    }
+```
 
-Steps
- * Putting 
+## Testing
+
+**infrastructure** module contains set of functionality tests
+
+## Built With
+
+* [Maven](https://maven.apache.org/) - Dependency Management
+
+## Authors
+
+**Wojciech Waldon** - check me on [github](https://github.com/wojciechwaldon/).
