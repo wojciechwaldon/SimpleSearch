@@ -23,7 +23,7 @@ class Document {
     }
 
     static Document of(String content) {
-        return new Document(content, Tokenizator.tokenize(content));
+        return new Document(content, Tokenizer.tokenize(content));
     }
 
     Double getTfidf(String phrase) {
