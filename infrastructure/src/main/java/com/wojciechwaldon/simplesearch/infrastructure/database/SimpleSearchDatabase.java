@@ -1,26 +1,28 @@
 package com.wojciechwaldon.simplesearch.infrastructure.database;
 
 import com.wojciechwaldon.simplesearch.application.Database;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class SimpleSearchDatabase implements Database {
 
-    private HashMap<String, Set<String>> phrases;
+    private HashMap<String, List<Phrase>> phrasesInDocument;
     private TFIDFGenerator tfidfGenerator;
 
     private Consumer<String> saveDocument = document -> {
         List<String> words = Tokenizator.tokenize(document);
+        List<Phrase> phrases = words.stream()
+                .map(Phrase::of)
+                .collect(Collectors.toList());
 
-        for (String word : words) {
-            putValue(document, word);
-        }
+        putValue(document, phrases);
+        updatePhraseTFIDF();
     };
 
     public SimpleSearchDatabase() {
-        this.phrases = new HashMap<>();
+        this.phrasesInDocument = new HashMap<>();
         this.tfidfGenerator = new TFIDFGenerator();
     }
 
@@ -32,28 +34,32 @@ public class SimpleSearchDatabase implements Database {
 
     @Override
     public List<String> getDocumentsFor(String phrase) {
-        List<String> documentsForPhrase = new ArrayList<>(phrases.get(phrase));
-        documentsForPhrase.sort(new PhraseComparator(tfidfGenerator, phrases, phrase));
-        return documentsForPhrase;
+        Map<String, Phrase> documentsForPhrase = new HashMap<>();
+        for (Map.Entry<String, List<Phrase>> document : phrasesInDocument.entrySet()) {
+            for (Phrase phraseInDocument : document.getValue()) {
+                if (phraseInDocument.value.equalsIgnoreCase(phrase))
+                    documentsForPhrase.put(document.getKey(), phraseInDocument);
+            }
+        }
+        return phrasesInDocument.entrySet().stream()
+                .sorted(TFIDFComparator.of(phrase))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
-    private void putValue(String document, String phrase) {
-        Set<String> documentsWithPhrase = getDocumentsWithPhrase(phrase);
-
-        documentsWithPhrase.add(document);
-        updatePhraseOccurence(documentsWithPhrase, phrase);
+    private void putValue(String document, List<Phrase> phrases) {
+        phrasesInDocument.put(document, phrases);
     }
 
-    private Set<String> getDocumentsWithPhrase(String phrase) {
-        Set<String> documentsWithPhrase = phrases.get(phrase);
+    private void updatePhraseTFIDF() {
+        Set<String> documents = new HashSet<>(phrasesInDocument.keySet());
 
-        if (CollectionUtils.isEmpty(documentsWithPhrase))
-            documentsWithPhrase = new HashSet<>();
+        for (Map.Entry<String, List<Phrase>> document : phrasesInDocument.entrySet()) {
+            for (Phrase phraseInDocument : document.getValue()) {
+                double IFIDF = tfidfGenerator.generateFor(document.getKey(), documents, phraseInDocument);
 
-        return documentsWithPhrase;
-    }
-
-    private void updatePhraseOccurence(Set<String> documents, String phrase) {
-        phrases.put(phrase, documents);
+                phraseInDocument.updateTFIDF(IFIDF);
+            }
+        }
     }
 }

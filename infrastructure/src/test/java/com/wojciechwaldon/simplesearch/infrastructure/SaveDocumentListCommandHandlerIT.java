@@ -19,9 +19,7 @@ import static org.junit.Assert.assertFalse;
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {SimpleSearchConfiguration.class})
-public class SaveDocumentListCommandHandlerIT {
-
-    private static final Set<String> DOCUMENTS = Sets.newSet("Test dokument");
+public class SaveDocumentListCommandHandlerIT extends BaseHanderIT{
 
     @Autowired
     private CommandExecutor commmandExecutor;
