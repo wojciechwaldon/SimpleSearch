@@ -9,11 +9,10 @@ import java.util.function.Consumer;
 public class SimpleSearchDatabase implements Database {
 
     private HashMap<String, Set<String>> phrases;
-    private Tokenizator tokenizator;
     private TFIDFGenerator tfidfGenerator;
 
     private Consumer<String> saveDocument = document -> {
-        List<String> words = tokenizator.tokenize(document);
+        List<String> words = Tokenizator.tokenize(document);
 
         for (String word : words) {
             putValue(document, word);
@@ -22,8 +21,7 @@ public class SimpleSearchDatabase implements Database {
 
     public SimpleSearchDatabase() {
         this.phrases = new HashMap<>();
-        this.tokenizator = new Tokenizator();
-        this.tfidfGenerator = new TFIDFGenerator(tokenizator);
+        this.tfidfGenerator = new TFIDFGenerator();
     }
 
     @Override
@@ -34,7 +32,6 @@ public class SimpleSearchDatabase implements Database {
 
     @Override
     public List<String> getDocumentsFor(String phrase) {
-
         List<String> documentsForPhrase = new ArrayList<>(phrases.get(phrase));
         documentsForPhrase.sort(new PhraseComparator(tfidfGenerator, phrases, phrase));
         return documentsForPhrase;

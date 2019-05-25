@@ -8,22 +8,15 @@ import java.util.stream.Collectors;
 
 class TFIDFGenerator {
 
-    private Tokenizator tokenizator;
-
-    TFIDFGenerator(Tokenizator tokenizator) {
-        this.tokenizator = tokenizator;
-    }
-
     double generateFor(String document, HashMap<String, Set<String>> phrases, String phrase) {
-        return tf(tokenizator.tokenize(document), phrase) * idf(phrases, phrase);
+        return tf(Tokenizator.tokenize(document), phrase) * idf(phrases, phrase);
     }
 
-    // number of times phrase appears in the document (phrases) / total number of phrase in the document(phrases)
+    // number of times phrase appears in the document
     private double tf(List<String> phrases, String phrase) {
-        long phraseInDocument = phrases.stream()
+        return phrases.stream()
                 .filter(phrase::equalsIgnoreCase)
                 .count();
-        return (double)phraseInDocument / (double)phrases.size();
     }
 
     // number of documents (phrases) / number of documents (phrases) that contain the phrase
@@ -33,12 +26,12 @@ class TFIDFGenerator {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        for(String document: documents) {
-            for(String phraseInDocument: tokenizator.tokenize(document)) {
-               if (phraseInDocument.equalsIgnoreCase(phrase)) {
-                   phraseInOverall++;
-                   break;
-               }
+        for (String document : documents) {
+            for (String phraseInDocument : Tokenizator.tokenize(document)) {
+                if (phraseInDocument.equalsIgnoreCase(phrase)) {
+                    phraseInOverall++;
+                    break;
+                }
             }
         }
         return Math.log(documents.size() / phraseInOverall);
