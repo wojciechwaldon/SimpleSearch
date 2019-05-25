@@ -27,6 +27,7 @@ class TFIDFGenerator {
                 }
             }
         }
+
         return Math.log(documents.size() / phraseInOverall);
 
     }

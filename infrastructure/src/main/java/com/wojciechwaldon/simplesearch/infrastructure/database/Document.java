@@ -6,6 +6,7 @@ import lombok.NonNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Getter
 class Document {
@@ -31,5 +32,15 @@ class Document {
 
     void updateTFIDF(String phrase, double value) {
         tfidf.put(phrase, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return content.equalsIgnoreCase(((Document) obj).content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content);
     }
 }

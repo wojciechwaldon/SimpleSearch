@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class SimpleSearchDatabase implements Database {
 
-    private Set<Document> documents = new HashSet<>();
+    private HashSet<Document> documents = new HashSet<>();
 
     private Consumer<String> saveDocument = document -> {
         documents.add(Document.of(document));
@@ -41,11 +41,6 @@ public class SimpleSearchDatabase implements Database {
         return documentsWithPhrase.stream()
                 .map(Document::getContent)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void deleteAll() {
-        this.documents = new HashSet<>();
     }
 
     private void updatePhraseTFIDF() {

@@ -29,11 +29,6 @@ public class FindDocumentsWithPhraseQueryViewQueryHandlerIT extends BaseHanderIT
     @Autowired
     private Database database;
 
-    @After
-    public void cleanUp() {
-        database.deleteAll();
-    }
-
     @Test
     public void shouldFindBrownPhraseDocuments() throws Throwable {
         //given
