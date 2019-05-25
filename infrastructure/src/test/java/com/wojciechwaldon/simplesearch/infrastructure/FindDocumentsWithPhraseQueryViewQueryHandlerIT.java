@@ -4,6 +4,8 @@ import com.wojciechwaldon.cqrs.api.query.QueryExecutor;
 import com.wojciechwaldon.simplesearch.api.find.FindDocumentsWithPhraseQuery;
 import com.wojciechwaldon.simplesearch.api.find.FindDocumentsWithPhraseQueryView;
 import com.wojciechwaldon.simplesearch.application.Database;
+import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,11 @@ public class FindDocumentsWithPhraseQueryViewQueryHandlerIT extends BaseHanderIT
 
     @Autowired
     private Database database;
+
+    @After
+    public void cleanUp() {
+        database.deleteAll();
+    }
 
     @Test
     public void shouldFindBrownPhraseDocuments() throws Throwable {

@@ -5,8 +5,8 @@ import java.util.Set;
 
 class TFIDFGenerator {
 
-    double generateFor(String document, Set<String> documents, Phrase phrase) {
-        return tf(Tokenizator.tokenize(document), phrase.value) * idf(documents, phrase.value);
+    double generateFor(List<String> documentWords, Set<Document> documents, String phrase) {
+        return tf(documentWords, phrase) * idf(documents, phrase);
     }
 
     // number of times phrase appears in the document
@@ -17,10 +17,10 @@ class TFIDFGenerator {
     }
 
     // Math.log(number of documents (phrases) / number of documents (phrases) that contain the phrase)
-    private double idf(Set<String> documents, String phrase) {
+    private double idf(Set<Document> documents, String phrase) {
         double phraseInOverall = 0;
-        for (String document : documents) {
-            for (String phraseInDocument : Tokenizator.tokenize(document)) {
+        for (Document document : documents) {
+            for (String phraseInDocument : document.getPhrases()) {
                 if (phraseInDocument.equalsIgnoreCase(phrase)) {
                     phraseInOverall++;
                     break;
