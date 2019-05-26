@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 
 import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collectors.toMap;
@@ -19,18 +18,10 @@ public class SimpleSearchDatabase implements Database {
 
     private Map<String, Map<String, Double>> phrases = new LinkedHashMap<>();
 
-    private Consumer<String> saveDocument = document -> {
-        List<String> phrases = Tokenizer.tokenize(document);
-
-        for (String phrase : phrases) {
-            put(document, phrase);
-        }
-    };
-
     @Override
     public void save(Set<String> documents) {
         documents
-                .forEach(document -> saveDocument.accept(document));
+                .forEach(this::saveDocument);
         phrases = updater.updatePhrasesTFIDF(phrases);
     }
 
@@ -39,6 +30,14 @@ public class SimpleSearchDatabase implements Database {
         Map<String, Double> documentsForPhrase = phrases.get(phrase);
 
         return sorted(documentsForPhrase);
+    }
+
+    private void saveDocument(String document) {
+        List<String> phrases = Tokenizer.tokenize(document);
+
+        for (String phrase : phrases) {
+            put(document, phrase);
+        }
     }
 
     private List<String> sorted(Map<String, Double> documents) {
@@ -63,14 +62,13 @@ public class SimpleSearchDatabase implements Database {
     private Set<String> getDocumentsWithPhrase(String phrase) {
         Map<String, Double> documentsWithPhrase = phrases.get(phrase);
 
-        if (doesDocumentNotExist(documentsWithPhrase))
-            return new HashSet<>();
-
-        return new HashSet<>(documentsWithPhrase.keySet());
+        return doesDocumentExist(documentsWithPhrase)
+                ? new HashSet<>(documentsWithPhrase.keySet())
+                : new HashSet<>();
     }
 
-    private boolean doesDocumentNotExist(Map<String, Double> documentsWithPhrase) {
-        return documentsWithPhrase == null || documentsWithPhrase.isEmpty();
+    private boolean doesDocumentExist(Map<String, Double> documentsWithPhrase) {
+        return documentsWithPhrase != null && !documentsWithPhrase.isEmpty();
     }
 
     private void updatePhraseOccurenceWithInitialValue(Set<String> documents, String phrase) {
