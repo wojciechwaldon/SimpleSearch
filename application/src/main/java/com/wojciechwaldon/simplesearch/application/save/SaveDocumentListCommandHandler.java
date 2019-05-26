@@ -10,7 +10,7 @@ public class SaveDocumentListCommandHandler implements CommandHandler<SaveDocume
 
     private Database database;
 
-    public void handle(SaveDocumentListCommand saveDocumentListCommand) throws Exception {
+    public void handle(SaveDocumentListCommand saveDocumentListCommand) {
         database.save(saveDocumentListCommand.getDocuments());
     }
 }

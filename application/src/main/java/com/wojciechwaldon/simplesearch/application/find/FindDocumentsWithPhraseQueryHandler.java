@@ -11,7 +11,7 @@ public class FindDocumentsWithPhraseQueryHandler implements QueryHandler<FindDoc
 
     private Database database;
 
-    public FindDocumentsWithPhraseQueryView handle(FindDocumentsWithPhraseQuery findDocumentsWithPhraseQuery) throws Exception {
+    public FindDocumentsWithPhraseQueryView handle(FindDocumentsWithPhraseQuery findDocumentsWithPhraseQuery) {
         return FindDocumentsWithPhraseQueryView
                 .of(database.getDocumentsFor(findDocumentsWithPhraseQuery.getPhrase()));
     }
