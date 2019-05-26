@@ -16,6 +16,10 @@ public class SimpleSearchDatabase implements Database {
     @NonNull
     private SimpleSearchDatabaseUpdater updater;
 
+    /*
+        Map<Phrase<Map<Document,TFIDF>>
+        Phrase occurs in documents with certain TFIDF
+     */
     private Map<String, Map<String, Double>> phrases = new LinkedHashMap<>();
 
     @Override
