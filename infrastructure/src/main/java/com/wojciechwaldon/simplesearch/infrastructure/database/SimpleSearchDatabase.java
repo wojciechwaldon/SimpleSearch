@@ -3,8 +3,10 @@ package com.wojciechwaldon.simplesearch.infrastructure.database;
 import com.wojciechwaldon.simplesearch.application.Database;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import static java.util.Comparator.*;
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toMap;
 
@@ -32,9 +34,9 @@ public class SimpleSearchDatabase implements Database {
         Map<String, Double> documents = phrases.get(phrase)
                 .entrySet()
                 .stream()
-                .sorted(comparingByValue())
+                .sorted(Entry.comparingByValue(reverseOrder()))
                 .collect(
-                        toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                        toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e2,
                                 LinkedHashMap::new));
 
         return new ArrayList<>(documents.keySet());
@@ -69,9 +71,28 @@ public class SimpleSearchDatabase implements Database {
     }
 
     private void updatePhrasesTFIDF() {
-        //List<String> overallDocuments = phrases.
-//        phrases.entrySet()
-//                .stream()
-//                .map(p -> p.)
+        Map<String, Map<String, Double>> updatedPhrases = new LinkedHashMap<>();
+        for (Entry<String, Map<String, Double>> phrase : phrases.entrySet()) {
+            String currentPhrase = phrase.getKey();
+            Map<String, Double> documentsWithPhrase = phrase.getValue();
+
+            documentsWithPhrase.forEach((currentDocument, value) -> {
+
+                Double TFIDF = TFIDFGenerator.generateFor(currentDocument, phrases, currentPhrase);
+
+                if (updatedPhrases.containsKey(currentPhrase)) {
+                    updatedPhrases.get(currentPhrase).put(currentDocument, TFIDF);
+                } else {
+                    Map<String, Double> updatedDocument = new HashMap<String, Double>() {{
+                        put(currentDocument, TFIDF);
+                    }};
+
+                    updatedPhrases.put(currentPhrase, updatedDocument);
+                }
+                // updatedPhrases.put(currentPhrase, updatedPhrases.containsKey(currentPhrase) ? updatedPhrases.get(currentPhrase).put(currentDocument, TFIDF) : updatedDocument);
+                //updatedPhrases.computeIfPresent(currentPhrase, (k, v) -> v.put(currentDocument, TFIDF));
+            });
+        }
+        phrases = updatedPhrases;
     }
 }
