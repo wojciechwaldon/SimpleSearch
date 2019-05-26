@@ -1,26 +1,27 @@
 package com.wojciechwaldon.simplesearch.infrastructure.database;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 class Document {
 
     @NonNull
     private String content;
 
+    @NonNull
     private List<String> phrases;
-    private Map<String, Double> tfidf = new HashMap<>();
 
-    private Document(String content, List<String> phrases) {
-        this.content = content;
-        this.phrases = phrases;
-    }
+    @Getter(AccessLevel.NONE)
+    private Map<String, Double> tfidf = new HashMap<>();
 
     static Document of(String content) {
         return new Document(content, Tokenizer.tokenize(content));

@@ -17,7 +17,7 @@ public class SimpleSearchDatabase implements Database {
     private Consumer<String> saveDocument = document -> {
         documents.add(Document.of(document));
 
-        updatePhraseTFIDF();
+        updatePhrasesTFIDF();
     };
 
     @Override
@@ -49,7 +49,7 @@ public class SimpleSearchDatabase implements Database {
                 .collect(Collectors.toList());
     }
 
-    private void updatePhraseTFIDF() {
+    private void updatePhrasesTFIDF() {
         for (Document document : documents) {
             for (String phrase : document.getPhrases()) {
                 double TFIDF = TFIDFGenerator.generateFor(document.getPhrases(), documents, phrase);
