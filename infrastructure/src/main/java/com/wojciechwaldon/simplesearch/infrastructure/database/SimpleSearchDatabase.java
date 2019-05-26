@@ -2,7 +2,6 @@ package com.wojciechwaldon.simplesearch.infrastructure.database;
 
 import com.wojciechwaldon.simplesearch.application.Database;
 
-
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -55,7 +54,6 @@ public class SimpleSearchDatabase implements Database {
         updatePhraseOccurence(documentsWithPhrase, phrase);
     }
 
-    //todo two returns
     private Set<String> getDocumentsWithPhrase(String phrase) {
         Map<String, Double> documentsWithPhrase = phrases.get(phrase);
 
@@ -82,21 +80,24 @@ public class SimpleSearchDatabase implements Database {
             String currentPhrase = phrase.getKey();
             Map<String, Double> documentsWithPhrase = phrase.getValue();
 
-            documentsWithPhrase.forEach((currentDocument, value) -> {
-
-                Double TFIDF = TFIDFGenerator.generateFor(currentDocument, phrases, currentPhrase);
-
-                if (updatedPhrases.containsKey(currentPhrase)) {
-                    updatedPhrases.get(currentPhrase).put(currentDocument, TFIDF);
-                } else {
-                    Map<String, Double> updatedDocument = new HashMap<String, Double>() {{
-                        put(currentDocument, TFIDF);
-                    }};
-
-                    updatedPhrases.put(currentPhrase, updatedDocument);
-                }
-            });
+            documentsWithPhrase.forEach((currentDocument, value) ->
+                    updateFor(updatedPhrases, currentDocument, currentPhrase)
+            );
         }
         phrases = updatedPhrases;
+    }
+
+    private void updateFor(Map<String, Map<String, Double>> updatedPhrases, String currentDocument, String currentPhrase) {
+        Double TFIDF = TFIDFGenerator.generateFor(currentDocument, phrases, currentPhrase);
+
+        if (updatedPhrases.containsKey(currentPhrase)) {
+            updatedPhrases.get(currentPhrase).put(currentDocument, TFIDF);
+        } else {
+            Map<String, Double> updatedDocument = new HashMap<String, Double>() {{
+                put(currentDocument, TFIDF);
+            }};
+
+            updatedPhrases.put(currentPhrase, updatedDocument);
+        }
     }
 }
