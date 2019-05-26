@@ -6,14 +6,12 @@ import com.wojciechwaldon.simplesearch.api.find.FindDocumentsWithPhraseQueryView
 import com.wojciechwaldon.simplesearch.application.Database;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -21,12 +19,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {SimpleSearchConfiguration.class})
-public class FindDocumentsWithPhraseQueryViewQueryHandlerIT {
-
-    private static final String DOCUMENT_1 = "the brown fox jumped over the brown dog";
-    private static final String DOCUMENT_2 = "the lazy brown dog sat in the corner";
-    private static final String DOCUMENT_3 = "the red fox bit the lazy dog";
-    private static final Set<String> DOCUMENTS = Sets.newSet(DOCUMENT_1, DOCUMENT_2, DOCUMENT_3);
+public class FindDocumentsWithPhraseQueryViewQueryHandlerIT extends BaseHandlerIT {
 
     @Autowired
     private QueryExecutor queryExecutor;
@@ -64,7 +57,7 @@ public class FindDocumentsWithPhraseQueryViewQueryHandlerIT {
         FindDocumentsWithPhraseQueryView queryView = queryExecutor.execute(query);
         List<String> documents = queryView.getDocuments();
 
-        //then;
+        //then
         assertThat(documents).hasSize(2);
         assertEquals(DOCUMENT_1, documents.get(0));
         assertEquals(DOCUMENT_3, documents.get(1));
