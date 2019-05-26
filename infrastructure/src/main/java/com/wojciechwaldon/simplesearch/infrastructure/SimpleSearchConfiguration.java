@@ -1,6 +1,7 @@
 package com.wojciechwaldon.simplesearch.infrastructure;
 
 import com.wojciechwaldon.simplesearch.infrastructure.database.SimpleSearchDatabase;
+import com.wojciechwaldon.simplesearch.infrastructure.database.SimpleSearchDatabaseUpdater;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -10,7 +11,12 @@ import org.springframework.context.annotation.Import;
 public class SimpleSearchConfiguration {
 
     @Bean
-    public SimpleSearchDatabase simpleSearchDatabase() {
-        return new SimpleSearchDatabase();
+    public SimpleSearchDatabaseUpdater simpleSearchDatabaseUpdater() {
+        return new SimpleSearchDatabaseUpdater();
+    }
+
+    @Bean
+    public SimpleSearchDatabase simpleSearchDatabase(SimpleSearchDatabaseUpdater simpleSearchDatabaseUpdater) {
+        return new SimpleSearchDatabase(simpleSearchDatabaseUpdater);
     }
 }

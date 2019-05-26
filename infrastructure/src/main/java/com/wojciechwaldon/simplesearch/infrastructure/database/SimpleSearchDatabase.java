@@ -1,6 +1,8 @@
 package com.wojciechwaldon.simplesearch.infrastructure.database;
 
 import com.wojciechwaldon.simplesearch.application.Database;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -9,15 +11,19 @@ import java.util.function.Consumer;
 import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collectors.toMap;
 
+@RequiredArgsConstructor
 public class SimpleSearchDatabase implements Database {
+
+    @NonNull
+    private SimpleSearchDatabaseUpdater updater;
 
     private Map<String, Map<String, Double>> phrases = new LinkedHashMap<>();
 
     private Consumer<String> saveDocument = document -> {
-        List<String> words = Tokenizer.tokenize(document);
+        List<String> phrases = Tokenizer.tokenize(document);
 
-        for (String word : words) {
-            putValue(document, word);
+        for (String phrase : phrases) {
+            put(document, phrase);
         }
     };
 
@@ -25,17 +31,17 @@ public class SimpleSearchDatabase implements Database {
     public void save(Set<String> documents) {
         documents
                 .forEach(document -> saveDocument.accept(document));
-        updatePhrasesTFIDF();
+        phrases = updater.updatePhrasesTFIDF(phrases);
     }
 
     @Override
     public List<String> getDocumentsFor(String phrase) {
-        Map<String, Double> documents = phrases.get(phrase);
+        Map<String, Double> documentsForPhrase = phrases.get(phrase);
 
-        return sortedPhrasesFor(documents);
+        return sorted(documentsForPhrase);
     }
 
-    private List<String> sortedPhrasesFor(Map<String, Double> documents) {
+    private List<String> sorted(Map<String, Double> documents) {
         Map<String, Double> sortedDocuments = documents
                 .entrySet()
                 .stream()
@@ -47,7 +53,7 @@ public class SimpleSearchDatabase implements Database {
         return new ArrayList<>(sortedDocuments.keySet());
     }
 
-    private void putValue(String document, String phrase) {
+    private void put(String document, String phrase) {
         Set<String> documentsWithPhrase = getDocumentsWithPhrase(phrase);
 
         documentsWithPhrase.add(document);
@@ -72,32 +78,5 @@ public class SimpleSearchDatabase implements Database {
                 .collect(toMap(document -> document, value -> 0.D));
 
         phrases.put(phrase, documentsForPhrase);
-    }
-
-    private void updatePhrasesTFIDF() {
-        Map<String, Map<String, Double>> updatedPhrases = new LinkedHashMap<>();
-        for (Entry<String, Map<String, Double>> phrase : phrases.entrySet()) {
-            String currentPhrase = phrase.getKey();
-            Map<String, Double> documentsWithPhrase = phrase.getValue();
-
-            documentsWithPhrase.forEach((currentDocument, value) ->
-                    updateFor(updatedPhrases, currentDocument, currentPhrase)
-            );
-        }
-        phrases = updatedPhrases;
-    }
-
-    private void updateFor(Map<String, Map<String, Double>> updatedPhrases, String currentDocument, String currentPhrase) {
-        Double TFIDF = TFIDFGenerator.generateFor(currentDocument, phrases, currentPhrase);
-
-        if (updatedPhrases.containsKey(currentPhrase)) {
-            updatedPhrases.get(currentPhrase).put(currentDocument, TFIDF);
-        } else {
-            Map<String, Double> updatedDocument = new HashMap<String, Double>() {{
-                put(currentDocument, TFIDF);
-            }};
-
-            updatedPhrases.put(currentPhrase, updatedDocument);
-        }
     }
 }
