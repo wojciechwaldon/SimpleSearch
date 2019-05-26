@@ -57,7 +57,7 @@ public class SimpleSearchDatabase implements Database {
         Set<String> documentsWithPhrase = getDocumentsWithPhrase(phrase);
 
         documentsWithPhrase.add(document);
-        updatePhraseOccurence(documentsWithPhrase, phrase);
+        updatePhraseOccurenceWithInitialValue(documentsWithPhrase, phrase);
     }
 
     private Set<String> getDocumentsWithPhrase(String phrase) {
@@ -73,7 +73,7 @@ public class SimpleSearchDatabase implements Database {
         return documentsWithPhrase == null || documentsWithPhrase.isEmpty();
     }
 
-    private void updatePhraseOccurence(Set<String> documents, String phrase) {
+    private void updatePhraseOccurenceWithInitialValue(Set<String> documents, String phrase) {
         Map<String, Double> documentsForPhrase = documents.stream()
                 .collect(toMap(document -> document, value -> 0.D));
 

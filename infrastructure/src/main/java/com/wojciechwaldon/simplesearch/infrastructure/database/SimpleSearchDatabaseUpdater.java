@@ -9,14 +9,12 @@ public class SimpleSearchDatabaseUpdater {
 
     Map<String, Map<String, Double>> updatePhrasesTFIDF(Map<String, Map<String, Double>> phrases) {
         Map<String, Map<String, Double>> updatedPhrases = new LinkedHashMap<>();
-        for (Map.Entry<String, Map<String, Double>> phrase : phrases.entrySet()) {
-            String currentPhrase = phrase.getKey();
-            Map<String, Double> documentsWithPhrase = phrase.getValue();
 
-            documentsWithPhrase.forEach((currentDocument, value) ->
-                    updatePhrasesFor(phrases, updatedPhrases, currentDocument, currentPhrase)
-            );
-        }
+        phrases.forEach((currentPhrase, documentsWithPhrase) ->
+                documentsWithPhrase.forEach((currentDocument, value) ->
+                        updatePhrasesFor(phrases, updatedPhrases, currentDocument, currentPhrase)
+                ));
+
         return updatedPhrases;
     }
 
