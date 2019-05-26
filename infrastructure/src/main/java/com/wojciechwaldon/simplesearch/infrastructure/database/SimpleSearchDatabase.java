@@ -2,12 +2,12 @@ package com.wojciechwaldon.simplesearch.infrastructure.database;
 
 import com.wojciechwaldon.simplesearch.application.Database;
 
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
-import static java.util.Comparator.*;
-import static java.util.Map.Entry.comparingByValue;
+import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collectors.toMap;
 
 public class SimpleSearchDatabase implements Database {
@@ -31,7 +31,13 @@ public class SimpleSearchDatabase implements Database {
 
     @Override
     public List<String> getDocumentsFor(String phrase) {
-        Map<String, Double> documents = phrases.get(phrase)
+        Map<String, Double> documents = phrases.get(phrase);
+
+        return sortedPhrasesFor(documents);
+    }
+
+    private List<String> sortedPhrasesFor(Map<String, Double> documents) {
+        Map<String, Double> sortedDocuments = documents
                 .entrySet()
                 .stream()
                 .sorted(Entry.comparingByValue(reverseOrder()))
@@ -39,7 +45,7 @@ public class SimpleSearchDatabase implements Database {
                         toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e2,
                                 LinkedHashMap::new));
 
-        return new ArrayList<>(documents.keySet());
+        return new ArrayList<>(sortedDocuments.keySet());
     }
 
     private void putValue(String document, String phrase) {
@@ -89,8 +95,6 @@ public class SimpleSearchDatabase implements Database {
 
                     updatedPhrases.put(currentPhrase, updatedDocument);
                 }
-                // updatedPhrases.put(currentPhrase, updatedPhrases.containsKey(currentPhrase) ? updatedPhrases.get(currentPhrase).put(currentDocument, TFIDF) : updatedDocument);
-                //updatedPhrases.computeIfPresent(currentPhrase, (k, v) -> v.put(currentDocument, TFIDF));
             });
         }
         phrases = updatedPhrases;
